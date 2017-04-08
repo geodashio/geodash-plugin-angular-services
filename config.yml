@@ -1,0 +1,6 @@
+---
+name: geodash-plugin-angular-services
+services:
+  - GeoDashServiceBus.ts
+  - GeoDashServiceBootloader.ts
+  - GeoDashServiceCompile.ts
