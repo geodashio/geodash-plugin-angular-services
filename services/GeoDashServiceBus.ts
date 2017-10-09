@@ -17,17 +17,17 @@ export class GeoDashServiceBus {
   constructor(private http: Http) {
     this.channels = [];
     this.listeners = {};
-    ["primary", "intents", "render"].forEach((channel:any) => {
+    ["primary", "intents", "render", "journal"].forEach((channel:any) => {
       this.listeners[channel] = {};
       this.channels[channel] = new EventEmitter();
       this.channels[channel].subscribe(
         (args:any): void => {
-          let listeners = [].concat(
+          var matches = [].concat(
             extract([channel, "*"], this.listeners, []),
             extract([channel, args[0]], this.listeners, [])
           );
-          for(let i = 0; i < listeners.length; i++) {
-            listeners[i](args[0], args[1], args[2]);
+          for(let i = 0; i < matches.length; i++) {
+            matches[i](args[0], args[1], args[2]);
           }
         },
         (err:any): void => console.error(err),
@@ -37,31 +37,60 @@ export class GeoDashServiceBus {
 
   }
 
-  request(urls: string[]) {
+  request(urls: string[], methods?: string[], data?: any[]) {
     if(urls.length > 0)
     {
-      return Observable.forkJoin(urls.map((url:string):any => {
-        return this.http.get(url).map((res:Response):any => {
-          if(res.ok) {
-            var contentType = res.headers.get("content-type");
-            if(contentType == "application/json")
-            {
-              return JSON.parse(res.text());
-            }
-            else if(contentType == "text/xml; subtype=gml/2.1.2")
-            {
-              return res.text();
+      return Observable.forkJoin(urls.map((url:string, index: number):any => {
+
+        var method = extract([index], methods, "GET");
+        if(method == "POST")
+        {
+          return this.http.post(url, extract([index], data, undefined)).map((res:Response):any => {
+            if(res.ok) {
+              var contentType = res.headers.get("content-type");
+              if(contentType == "application/json")
+              {
+                return JSON.parse(res.text());
+              }
+              else if(contentType == "text/xml; subtype=gml/2.1.2")
+              {
+                return res.text();
+              }
+              else
+              {
+                return YAML.parse(res.text());
+              }
             }
             else
             {
-              return YAML.parse(res.text());
+              return undefined;
             }
-          }
-          else
-          {
-            return undefined;
-          }
-        })
+          });
+        }
+        else
+        {
+          return this.http.get(url).map((res:Response):any => {
+            if(res.ok) {
+              var contentType = res.headers.get("content-type");
+              if(contentType == "application/json")
+              {
+                return JSON.parse(res.text());
+              }
+              else if(contentType == "text/xml; subtype=gml/2.1.2")
+              {
+                return res.text();
+              }
+              else
+              {
+                return YAML.parse(res.text());
+              }
+            }
+            else
+            {
+              return undefined;
+            }
+          });
+        }
       }));
     }
     else
@@ -81,6 +110,7 @@ export class GeoDashServiceBus {
 
   bubble(name: string, data: any, element: ElementRef): void {
     element.nativeElement.dispatchEvent(new CustomEvent(name, { detail: data, bubbles: true }));
+    //document.getElementsByTagName("body")[0].dispatchEvent(new CustomEvent(name, { detail: data, bubbles: true }));
   }
 
 }
