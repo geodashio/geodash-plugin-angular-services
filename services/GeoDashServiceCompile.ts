@@ -8,9 +8,12 @@ import { GeoDashPipeAppend }  from 'GeoDashPipeAppend';
 import { GeoDashPipeDefaultIfUndefined }  from 'GeoDashPipeDefaultIfUndefined';
 import { GeoDashPipeDefaultIfUndefinedOrBlank }  from 'GeoDashPipeDefaultIfUndefinedOrBlank';
 import { GeoDashPipeDefaultIfEmpty }  from 'GeoDashPipeDefaultIfEmpty';
+import { GeoDashPipeEncodeBase64 }  from 'GeoDashPipeEncodeBase64';
 import { GeoDashPipeExclude }  from 'GeoDashPipeExclude';
 import { GeoDashPipeExtract }  from 'GeoDashPipeExtract';
-import { GeoDashPipeEncodeBase64 }  from 'GeoDashPipeEncodeBase64';
+import { GeoDashPipeExtractMultiple }  from 'GeoDashPipeExtractMultiple';
+import { GeoDashPipeFilterDefined }  from 'GeoDashPipeFilterDefined';
+import { GeoDashPipeFormatAddress }  from 'GeoDashPipeFormatAddress';
 import { GeoDashPipeFormatArray }  from 'GeoDashPipeFormatArray';
 import { GeoDashPipeFormatFloat }  from 'GeoDashPipeFormatFloat';
 import { GeoDashPipeFormatInteger }  from 'GeoDashPipeFormatInteger';
@@ -20,6 +23,7 @@ import { GeoDashPipeLowerCase }  from 'GeoDashPipeLowerCase';
 import { GeoDashPipeMGRS }  from 'GeoDashPipeMGRS';
 import { GeoDashPipeMarkdownToHTML }  from 'GeoDashPipeMarkdownToHTML';
 import { GeoDashPipePrepend }  from 'GeoDashPipePrepend';
+import { GeoDashPipeReplace }  from 'GeoDashPipeReplace';
 import { GeoDashPipeSelect }  from 'GeoDashPipeSelect';
 import { GeoDashPipeSlugify }  from 'GeoDashPipeSlugify';
 import { GeoDashPipeSplit }  from 'GeoDashPipeSplit';
@@ -37,7 +41,10 @@ export class GeoDashServiceCompile {
   private default_if_empty: any;
   private exclude: any;
   private extract: any;
+  private extract_multiple: any;
   private b64: any;
+  private filter_defined: any;
+  private formatAddress: any;
   private formatArray: any;
   private formatFloat: any;
   private formatInteger: any;
@@ -47,6 +54,7 @@ export class GeoDashServiceCompile {
   private mgrs: any;
   private md2html: any;
   private prepend: any;
+  private replace: any;
   private select: any;
   private slugify: any;
   private split: any;
@@ -66,15 +74,18 @@ export class GeoDashServiceCompile {
   //constructor(private append: GeoDashPipeAppend, private default_if_undefined_or_blank: GeoDashPipeDefaultIfUndefinedOrBlank, private extract: GeoDashPipeExtract, private join: GeoDashPipeJoin, private md2html: GeoDashPipeMarkdownToHTML, private prepend: GeoDashPipePrepend, private slugify: GeoDashPipeSlugify, private ternary_defined: GeoDashPipeTernaryDefined) {
   constructor() {
 
-    let injector = ReflectiveInjector.resolveAndCreate( [GeoDashPipeAppend, GeoDashPipeDefaultIfUndefined, GeoDashPipeDefaultIfUndefinedOrBlank, GeoDashPipeDefaultIfEmpty, GeoDashPipeExclude, GeoDashPipeExtract, GeoDashPipeEncodeBase64, GeoDashPipeFormatArray, GeoDashPipeFormatFloat, GeoDashPipeFormatInteger, GeoDashPipeFormatTelephone, GeoDashPipeJoin, GeoDashPipeLowerCase, GeoDashPipeMGRS, GeoDashPipeMarkdownToHTML, GeoDashPipePrepend, GeoDashPipeSelect, GeoDashPipeSlugify, GeoDashPipeSplit, GeoDashPipeTernaryDefined, GeoDashPipeTitleCase, GeoDashPipeUpperCase] );
+    let injector = ReflectiveInjector.resolveAndCreate( [GeoDashPipeAppend, GeoDashPipeDefaultIfUndefined, GeoDashPipeDefaultIfUndefinedOrBlank, GeoDashPipeDefaultIfEmpty, GeoDashPipeExclude, GeoDashPipeExtract, GeoDashPipeExtractMultiple, GeoDashPipeEncodeBase64, GeoDashPipeFilterDefined, GeoDashPipeFormatAddress, GeoDashPipeFormatArray, GeoDashPipeFormatFloat, GeoDashPipeFormatInteger, GeoDashPipeFormatTelephone, GeoDashPipeJoin, GeoDashPipeLowerCase, GeoDashPipeMGRS, GeoDashPipeMarkdownToHTML, GeoDashPipePrepend, GeoDashPipeReplace, GeoDashPipeSelect, GeoDashPipeSlugify, GeoDashPipeSplit, GeoDashPipeTernaryDefined, GeoDashPipeTitleCase, GeoDashPipeUpperCase] );
 
     this.append = injector.get(GeoDashPipeAppend);
     this.default_if_undefined = injector.get(GeoDashPipeDefaultIfUndefined);
     this.default_if_undefined_or_blank = injector.get(GeoDashPipeDefaultIfUndefinedOrBlank);
     this.default_if_empty = injector.get(GeoDashPipeDefaultIfEmpty);
+    this.b64 = injector.get(GeoDashPipeEncodeBase64);
     this.exclude = injector.get(GeoDashPipeExclude);
     this.extract = injector.get(GeoDashPipeExtract);
-    this.b64 = injector.get(GeoDashPipeEncodeBase64);
+    this.extract_multiple = injector.get(GeoDashPipeExtractMultiple);
+    this.filter_defined = injector.get(GeoDashPipeFilterDefined);
+    this.formatAddress = injector.get(GeoDashPipeFormatAddress);
     this.formatArray = injector.get(GeoDashPipeFormatArray);
     this.formatFloat = injector.get(GeoDashPipeFormatFloat);
     this.formatInteger = injector.get(GeoDashPipeFormatInteger);
@@ -84,6 +95,7 @@ export class GeoDashServiceCompile {
     this.mgrs = injector.get(GeoDashPipeMGRS);
     this.md2html = injector.get(GeoDashPipeMarkdownToHTML);
     this.prepend = injector.get(GeoDashPipePrepend);
+    this.replace = injector.get(GeoDashPipeReplace);
     this.select = injector.get(GeoDashPipeSelect);
     this.slugify = injector.get(GeoDashPipeSlugify);
     this.split = injector.get(GeoDashPipeSplit);
